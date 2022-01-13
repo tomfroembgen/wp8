@@ -1,0 +1,488 @@
+\documentclass[t]{beamer}
+
+%-------------------------------------------------------------------------------
+% 	colors
+%-------------------------------------------------------------------------------
+\usepackage{xcolor}
+\definecolor{UBBlue}{cmyk}{1.0,0.7,0,0}
+\definecolor{UBYellow}{cmyk}{0,0.3,1.0,0}
+\definecolor{UBGray}{cmyk}{0,0,0.15,0.55}
+\definecolor{UBBlueRGB}{RGB}{7,82,154}
+\definecolor{UBYellowRGB}{RGB}{255,185,12}
+\definecolor{UBGrayRGB}{RGB}{144,144,133}
+%\definecolor{tubaf}{RGB}{0,100,168}
+\definecolor{tubafred}{RGB}{181,18,62}
+\definecolor{tubafgreen}{RGB}{26,150,43}
+%\definecolor{tubaforange}{RGB}{224,134,3}
+%\definecolor{tubafblue}{RGB}{35,186,226}
+
+
+%-------------------------------------------------------------------------------
+% 	presentation setup
+%-------------------------------------------------------------------------------
+\mode<presentation>
+{
+    \usetheme{Boadilla}
+    \useinnertheme{circles}
+    \usecolortheme[named=UBBlue]{structure}
+    %\setbeamercovered{transparent}
+
+    % Adjust templates.
+    \setbeamertemplate{navigation symbols}{} %Remove navigation symbols
+	  \setbeamertemplate{blocks}[rounded][shadow=false] % adjust blocks
+
+    % Adjust colors.
+    \setbeamercolor{author in head/foot}{bg=UBBlue, fg=white}
+    \setbeamercolor{title in head/foot}{bg=UBYellow, fg=white}
+    \setbeamercolor{date in head/foot}{bg=UBGray, fg=white}
+    \setbeamercolor{title}{fg=UBBlue}
+    \setbeamercolor{subtitle}{fg=UBGray}
+    \setbeamercolor{author}{fg=UBGray}
+    \setbeamercolor{date}{fg=UBGray}
+	  \setbeamercolor{frametitle}{fg=UBBlue}
+    \setbeamercolor{alerted text}{fg=UBBlue}
+    \setbeamercolor{footnote mark}{fg=UBBlue}
+    \setbeamercolor{footnote}{fg=UBBlue}
+    \setbeamercolor{block title}{fg=black, bg=UBYellow}
+    \setbeamercolor{block body}{fg=black, bg=UBGray!15}
+
+    % Adjust page titles.
+    \setbeamertemplate{frametitle}{%
+        \vspace{2pt}%
+        \parbox[c][0.75cm][b]{\textwidth}{%
+            \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle%
+						\hfill%
+						\includegraphics[width=0.1\textwidth]{figures/uni-bonn.pdf}
+        }
+    }
+
+    % Adjust footline.
+    \setbeamertemplate{footline}
+    {
+      \hbox{%
+      \begin{beamercolorbox}[wd=.333333\paperwidth,ht=1.5ex,dp=0.5ex,center]{author in head/foot}%
+        \usebeamerfont{author in head/foot}\insertshortauthor
+      \end{beamercolorbox}%
+      \begin{beamercolorbox}[wd=.333333\paperwidth,ht=1.5ex,dp=0.5ex,center]{title in head/foot}%
+        \usebeamerfont{title in head/foot}\insertshorttitle
+      \end{beamercolorbox}%
+      \begin{beamercolorbox}[wd=.283333\paperwidth,ht=1.5ex,dp=0.5ex,center]{date in head/foot}%
+        \usebeamerfont{date in head/foot}\insertshortdate{}
+      \end{beamercolorbox}%
+      \begin{beamercolorbox}[wd=.05\paperwidth,ht=1.5ex,dp=0.5ex,right]{date in head/foot}%
+        \usebeamerfont{date in head/foot}\insertframenumber{}\hspace*{2ex} 
+      \end{beamercolorbox}}%
+      \vskip0pt%
+    }
+
+    % Adjust fonts.
+    \setbeamerfont{footnote}{size=\tiny}
+	  \setbeamerfont{date in head/foot}{size={\fontsize{4}{5}}}
+	  \setbeamerfont{title in head/foot}{size={\fontsize{4}{5}}}
+	  \setbeamerfont{author in head/foot}{size={\fontsize{4}{5}}}
+
+    % New environments by Marvin
+    \newenvironment{variableblock}[3]{%
+      \setbeamercolor{block title}{#2}
+      \setbeamercolor{block body}{#3}
+      \begin{block}{#1}}{\end{block}}
+
+
+    \newenvironment<>{grayblock}[2][1\textwidth]{%
+      \setlength{\textwidth}{#1}%
+      \setlength{\linewidth}{\textwidth}
+      \begin{actionenv}#3%
+        \def\insertblocktitle{#2}%
+        \par%
+        \setbeamercolor{block title}{bg=UBGray,fg=white}%
+        \setbeamercolor{block body}{bg=UBGray!20!white,fg=black}
+        \usebeamertemplate{block begin}}
+      {\par%
+      \usebeamertemplate{block end}%
+      \end{actionenv}%
+    }
+}
+
+
+%-------------------------------------------------------------------------------
+% 	layout, geometry
+%-------------------------------------------------------------------------------
+%\usepackage{enumitem}
+%\setlist[itemize]{leftmargin=10pt}
+\usepackage[absolute,overlay]{textpos}
+
+\usepackage[%
+	activate={true,nocompatibility}, % activate protrusion and expansion
+	final, % enable microtype
+	tracking=true,
+	kerning=true,
+	spacing=true,
+	factor=1100, % add 10% to the protrusion amount (default is 1000)
+	stretch=10, % 
+	shrink=10, % reduce stretchability/shrinkability (default is 20/20)
+	]{microtype}
+\SetExtraKerning[unit=space]{%
+	encoding={*},
+	family={*},
+	series={*},
+	size={footnotesize,small,normalsize,scriptsize}}{
+		"28={ ,150}, % left bracket, add space from right
+		"29={150, }, % right bracket, add space from left
+		\textquotedblleft={ ,150}, % left quotation mark, space from right
+		\textquotedblright={150, } % right quotation mark, space from left
+}
+\SetTracking{encoding={*}, shape=sc}{40} % correct spacing for \textsc{}
+
+
+%-------------------------------------------------------------------------------
+% 	language and time
+%-------------------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}\DeclareUnicodeCharacter{2212}{-}
+\usepackage[american]{babel}
+\microtypecontext{spacing=nonfrench} % extra space at end of sentence -> english
+\usepackage[ddmmyyyy]{datetime}
+\usepackage{bookmark}
+
+%-------------------------------------------------------------------------------
+% 	font
+%-------------------------------------------------------------------------------
+\usepackage{lmodern}
+%\usepackage{helvet}
+%\renewcommand{\familydefault}{\sfdefault}
+
+
+%-------------------------------------------------------------------------------
+% 	tables
+%-------------------------------------------------------------------------------
+\usepackage{tabularx}
+\usepackage{booktabs}                                     % horizontal lines
+\usepackage{float}
+\usepackage{multirow}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}   % center
+\newcolumntype{Y}{>{\centering\arraybackslash}X}          % autowidth and center
+%\usepackage{makecell}
+%	\renewcommand\theadfont{\mdseries}
+
+
+%-------------------------------------------------------------------------------
+% 	figure, graphics
+%-------------------------------------------------------------------------------
+\usepackage[%
+  singlelinecheck=true,
+  justification=justified,
+  format=plain,
+  font=small,
+  labelfont=it
+]{caption}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\setbeamertemplate{caption}[numbered]
+\graphicspath{{figures/}}
+
+% inclusion of svg from inkscape (.pdf_tex)
+%\usepackage{import}
+%\newcommand{\inkscapefigure}[1]{%
+%  \def\svgwidth{\columnwidth}
+%  \import{./img/}{#1.pdf_tex}
+%}
+
+
+%-------------------------------------------------------------------------------
+% 	TikZ
+%-------------------------------------------------------------------------------
+%\usepackage{tikz}
+%\usetikzlibrary{scopes,calc,fit,positioning,arrows,arrows.meta,matrix,backgrounds,decorations} 
+%\tikzstyle{Rechteck}=[thick, draw, rectangle, minimum height=8mm ,minimum width=16mm, align=center, text=black]
+%\tikzstyle{linie} = [-, shorten <=-0.05pt, shorten >=-0.05pt, very thick]
+%\tikzstyle{box}=[draw=black, rounded corners=2pt, rectangle, fill=white, text=black, align=center]
+%\tikzstyle{arrow} = [->,>=stealth', shorten <=0pt, very thick]
+
+%\def\checkmark{\tikz\fill[scale=0.4,color=tubafgreen](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+%\def\scalecheck{\resizebox{\widthof{\checkmark}*\ratio{\widthof{x}}{\widthof{\normalsize x}}}{!}{\checkmark}}
+
+%\usepackage{pifont}
+%\newcommand*\colourcheck[1]{%
+%\expandafter\newcommand\csname #1check\endcsname{\textcolor{#1}{\ding{51}}}%
+%}
+%\newcommand*\colourcross[1]{%
+%\expandafter\newcommand\csname #1cross\endcsname{\textcolor{#1}{\ding{55}}}%
+%}
+%\colourcheck{tubafgreen}
+%\colourcross{tubafred}
+
+%-------------------------------------------------------------------------------
+% 	pgfplots
+%-------------------------------------------------------------------------------
+%\usepackage{pgfplots}
+%\usepackage{pgfplotstable} 
+%\usepgfplotslibrary{fillbetween}
+%\pgfplotsset{
+%	compat=newest,
+%	/pgf/number format/use comma, %Komma als Dezimaltrenner
+%	enlargelimits=false, %keine Ahnung
+%	/pgf/number format/1000 sep={} %kein Abstand bei Tausendern
+%}
+%\pgfplotsset{
+%  layers/axis lines on top/.define layer set={
+%    axis background,
+%    axis grid,
+%    axis ticks,
+%    axis tick labels,
+%    pre main,
+%    main,
+%    axis lines,
+%    axis descriptions,
+%    axis foreground,
+%  }{/pgfplots/layers/standard},
+%}
+
+
+%-------------------------------------------------------------------------------
+% 	chemistry
+%-------------------------------------------------------------------------------
+%\usepackage{chemmacros}
+%\usepackage{upgreek}
+%\chemsetup{modules={reactions}}
+%\chemsetup[reactions]{before-tag = R , tag-open = ( , tag-close = )}
+%\usepackage{chemfig}
+
+
+%-------------------------------------------------------------------------------
+% 	math
+%-------------------------------------------------------------------------------
+\usepackage{amsmath,amsfonts,amsthm,amssymb,amstext}
+\usepackage{siunitx}
+\sisetup{%
+  detect-all,                             % alle äußeren Schriftkonventionen übernehmen
+  per-mode=fraction,                      % \per creates fraction
+  output-decimal-marker={.},              % decimal symbol 
+  unit-mode=text,                         % Einheiten im Textmodus
+  separate-uncertainty=true,              % von/bis oder \pm haben beide Einheit nach Zahl
+  range-phrase=\ {\text{\textendash}}\ ,  % range denoted with endash (note spacing)
+  range-units=single,                     % range has only one unit
+  exponent-product=\cdot,                 % use \cdot: \SI{6,626E-34}{\joule\second}
+  output-product=\cdot                    % use \cdot: \SI{6,626E-34}{\joule\second}
+}       
+\DeclareSIUnit{\calorie}{cal}
+\DeclareSIUnit{\ppm}{ppm}
+\DeclareSIUnit{\kcal}{\kilo\calorie}
+%\DeclareSIUnit{\angstrom}{\textup{\AA}}
+%\DeclareSIUnit{\Normal}{\textsc{n}}
+%\DeclareSIUnit{\hartree}{E\textsubscript{h}}
+
+
+%-------------------------------------------------------------------------------
+% 	bibliography, citation, links
+%-------------------------------------------------------------------------------
+\usepackage[style=english]{csquotes} % required by biblatex.sty
+\usepackage[backend=biber,style=chem-angew,maxbibnames=10,sorting=none]{biblatex} 
+\addbibresource{bib.bib}
+
+%\DeclareCiteCommand{\footfullcitetext}[\mkbibfootnotetext]
+%  {\usebibmacro{prenote}}
+%  {\usedriver
+%     {\DeclareNameAlias{sortname}{default}}
+%     {\thefield{entrytype}}}
+%  {\multicitedelim}
+%  {\usebibmacro{postnote}}
+
+
+%-------------------------------------------------------------------------------
+% 	code inclusion
+%-------------------------------------------------------------------------------
+% \usepackage{listings}
+% \lstset{%
+%   literate={ä}{{\"a}}1,
+%   backgroundcolor=\color{gray!50!white},
+%   numberstyle=\tiny\color{gray!50!white},
+%   basicstyle=\ttfamily\footnotesize,
+%   breaklines=true,
+%   breakatwhitespace=false,
+%   breaklines=true,
+%   %captionpos=b,
+%   keepspaces=true,
+%   numbers=left,
+%   numbersep=13pt,
+%   showspaces=false,
+%   showstringspaces=false,
+%   showtabs=false,
+%   tabsize=2,
+%   frame=tlbr,
+%   framerule=0pt,
+%   framesep=2pt,
+%   xleftmargin=7pt,
+%   framexleftmargin=5pt
+% }
+
+% frame around code pieces
+% \usepackage[framemethod=1]{mdframed}
+% \surroundwithmdframed[
+%  hidealllines=true,
+%  backgroundcolor=gray!50!white,
+%  innerleftmargin=5pt,
+%  innertopmargin=-3pt,
+%  innerbottommargin=-3pt
+% ]{lstlisting}
+
+
+%-------------------------------------------------------------------------------
+%   miscellaneous
+%-------------------------------------------------------------------------------
+%\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % horizontal rule (arg = height)
+%\newcommand{\boltz}{k_{\mathrm{B}}}             % Boltzmann constant
+%\usepackage{lipsum}
+
+
+%-------------------------------------------------------------------------------
+% 	debugging
+%-------------------------------------------------------------------------------
+%\usepackage{lua-visual-debug} % run with lualatex!
+%\usepackage[demo]{graphicx}
+
+
+%###############################################################################
+%###############################################################################
+%######################### !!!!! END OF PREAMBLE !!!!! #########################
+%###############################################################################
+%###############################################################################
+
+
+%Einstellungen der Präsentation
+\title[VCD spectra from AIMD simulations]{Classical Magnetic Dipole Moments for the Simulation of Vibrational
+Circular Dichroism by ab Initio \\ Molecular Dynamics}
+\subtitle{\vspace{10mm}\fullcite[]{thomas2016classical}}
+\author{Tom Frömbgen}
+%\institute[WP8]{WP8 Time-dependent phenomena}
+\date{18/01/2022}
+
+
+%Hier beginnt die Präsentation
+\begin{document}
+
+%%%%% Titelseite %%%%%
+\begin{frame}[noframenumbering,plain]
+	\titlepage
+\end{frame}
+
+%%%%% Introduction to VCD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{Vibrational circular dichroism spectroscopy}
+
+	Measurement of the difference in absorption $ \Delta A $ of left and right circularly polarized IR radiation.
+
+	\begin{itemize}
+		\item Important technique to analyze chiral molecules
+		\item Enantiomers have mirrored spectra
+		\item Powerful tool in combination with IR spectroscopy.
+	\end{itemize}
+
+	\begin{figure}[bp]
+		\centering
+		\includegraphics[width=0.8\textwidth]{example_vcd.png}
+		\caption{Computed VCD spectra of \textit{(S),(R)}-2-butanol.}%\footfullcite{thomas2016classical}}
+	\end{figure}
+\end{frame}
+
+%%%%% Why this? %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{What's new?}
+
+  Computation of VCD spectra so far:
+  
+  \begin{itemize}
+    \item Static quantum chemistry, based on
+    \begin{enumerate}
+      \item [a)] magnetic field perturbation theory, or
+      \item [b)] nuclear velocity perturbation theory
+    \end{enumerate}
+    \item Easy for gas phase
+    \item Inclusion of bulk effects by implicit or explicit solvation models
+    \item But: No dynamic effects
+  \end{itemize}
+
+  Newly introduced by this paper:
+
+  \begin{itemize}
+    \item VCD spectra from \textit{ab inito} MD simulations
+    \begin{itemize}
+      \item AIMD: Forces are computed by electronic structure method 
+    \end{itemize}
+    \item Gas and bulk phase
+    \item Allows for dynamic effects
+  \end{itemize}
+\end{frame}
+
+%%%%% Theory %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{Theory}
+
+  VCD spectrum can be obtained from FT of time cross-correlation function of electric dipole moment $ \mu(t) $ and magnetic dipole moment $ m(t) $.
+  %
+  \begin{equation}
+    \Delta A (\tilde{\nu}) \propto \int
+    \left[ \langle \dot{\mu}(\tau) \dot{m}(t+\tau) \rangle_\tau
+    - \langle \dot{m}(\tau) \dot{\mu}(t+\tau) \rangle_\tau \right]
+    \exp(-2\pi\mathrm{i}c\tilde{\nu}t) \mathrm{d}t
+  \end{equation}
+  %
+  The electric dipole moment is obtained from Voronoi tesselation of the electron density $ \rho $ (fast).
+  %
+  \begin{equation}
+    \mu_k = \int r\cdot\rho(r) \mathrm{d}r~~~k=1,\dots,N 
+  \end{equation}
+  %
+  Key point: The magnetic dipole moment is obtained from the electric current  density $ j $ and the continuity equation (computational bottleneck).
+  %
+  \begin{equation}
+    \frac{\partial \rho(r,t)}{\partial t} + \nabla j(r,t) = 0
+  \end{equation}
+  %
+  \begin{equation}
+    m = \frac{1}{2} \int r \cdot j(r) \mathrm{d}r
+  \end{equation}
+  %
+\end{frame}
+
+%%%%% Results %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{Results I}
+
+  \begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{spec_butanol_gas.png}
+    \caption{Gas Phase VCD spectra of \textit{(R)}-2-butanol. AIMD: BLYP/DZ}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Results II}
+
+  \begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{spec_butanol_bulk.png}
+    \caption{Bulk Phase VCD spectra of \textit{(S),(R)}-2-butanol. AIMD: BLYP/DZ}
+  \end{figure}
+
+\end{frame}
+
+%%%%% Summary %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{Summary}
+
+  VCD spectra from AIMD simulations:
+
+  \begin{itemize}
+    \item [+] Accurate
+    \item [+] Allow for dynamics
+    \item [+] Yield (all) different conformers and their spectra
+    \item [+] Separate analysis of every molecule possible
+    \item [+] Not restricted to any particular electronic structure method 
+    \item [ ]
+    \item [$-$] Much higher cost compared to static QC
+    \item [$-$] Highly accurate electronic structure methods often not affordable
+  \end{itemize}
+
+\end{frame}
+\end{document}

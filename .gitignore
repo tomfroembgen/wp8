@@ -1,0 +1,20 @@
+# Latex Files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.nav
+*.snm
+
+# VSCode stuff
+.vscode/
+
+# the rest
+studies-wp8/
