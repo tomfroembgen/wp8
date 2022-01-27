@@ -74,15 +74,8 @@ program main
   !> print the resulting coordinate matrix
   !call write_matrix(xyz, name="coordinate matrix")
 
-  !> compute the forces
-  call calc_forces(natom, xyz, f, l)
-
-  !> print the resulting force matrix
-  !call write_matrix(f, name="force matrix")
-
-  !> compute potential energy
-  call calc_e_pot_lj(natom, xyz, l, e_pot_lj)
-  !write (*, *) "Harmonic potential energy =", e_pot_harm
+  !> compute the forces and potential energy
+  call calc_forces(natom, xyz, f, l, e_pot_lj)
 
   !> open file for energies and start printing
   open (unit=15, file="energy.csv")
@@ -113,19 +106,17 @@ program main
       xyz(:, j) = xyz(:, j) + (v(:, j)*delta)
     end do
 
-    !> calculate new forces
-    call calc_forces(natom, xyz, f, l)
-    !> print the resulting force matrix
-    !call write_matrix(f, name="force matrix")
+    !> calculate new forces and potential energy
+    call calc_forces(natom, xyz, f, l, e_pot_lj)
 
     !> compute new velocities (part 2)
     do j = 1, natom
       v(:, j) = v(:, j) + 0.5_wp*(f(:, j)/mass)*delta
     end do
 
-    !> calculate energies
+    !> calculate kinetic energy
     call calc_e_kin(natom, mass, v, e_kin)
-    call calc_e_pot_lj(natom, xyz, l, e_pot_lj)
+
     e_tot = e_kin + e_pot_lj
 
     !> print results to terminal

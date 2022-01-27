@@ -164,7 +164,7 @@ contains
 
   end subroutine calc_e_pot_lj
 
-  subroutine calc_forces(natom, xyz, f, l)
+  subroutine calc_forces(natom, xyz, f, l, e_pot_lj)
 
     implicit none
 
@@ -180,11 +180,17 @@ contains
     !> length of box in Angstrom
     real(wp), intent(in) :: l
 
+    !> lennard-jones potential energy
+    real(wp), intent(out) :: e_pot_lj
+
     !> lj parameter
     real(wp), parameter :: sigma = 3.405_wp
 
     !> lj parameter
     real(wp), parameter :: epsilon = 120.0_wp
+
+    !> cutoff energy
+    real(wp), parameter :: e_cutoff = 3.83738839608178386E-3_wp
 
     !> cutoff radii, squared, sigma squared
     real(wp) :: rcutoff, rcutoff2, sigma2
@@ -209,6 +215,7 @@ contains
     rcutoff2 = rcutoff*rcutoff
 
     f = 0._wp
+    e_pot_lj = 0._wp
     do i = 1, natom - 1
       do j = i + 1, natom
 
@@ -224,10 +231,15 @@ contains
           ff = 48.0_wp*epsilon*(sigmar12 - (0.5_wp*sigmar6))/xyzij2
           f(:, i) = f(:, i) + ff*xyzij
           f(:, j) = f(:, j) + ff*xyzij
+
+          e_pot_lj = e_pot_lj + sigmar12 - sigmar6 + e_cutoff
         end if
 
       end do
     end do
+
+    e_pot_lj = e_pot_lj*epsilon*4.0_wp
+
   end subroutine calc_forces
 
 end module algorithm
