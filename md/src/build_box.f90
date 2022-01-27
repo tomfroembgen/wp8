@@ -53,7 +53,6 @@ contains
     dl = l/nl
     hl = l/2.0_wp
 
-    write(*,*) hl, dl
     !> place atoms in box
     n = 1
     open (unit=14, file="box.xyz")

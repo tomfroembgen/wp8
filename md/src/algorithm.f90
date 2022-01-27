@@ -71,7 +71,7 @@ contains
 
     e_pot_harm = 0.0_wp
     do i = 1, natom
-      e_pot_harm = e_pot_harm + 0.5_wp*k*sum((xyz(:,i) - a(:,i))**2)
+      e_pot_harm = e_pot_harm + 0.5_wp*k*sum((xyz(:, i) - a(:, i))**2)
     end do
 
   end subroutine calc_e_pot_harm
@@ -97,7 +97,7 @@ contains
 
     e_kin = 0.0_wp
     do i = 1, natom
-      e_kin = e_kin + 0.5_wp * mass * sum((v(:,i))**2)
+      e_kin = e_kin + 0.5_wp*mass*sum((v(:, i))**2)
     end do
 
   end subroutine calc_e_kin
