@@ -1,8 +1,10 @@
 program main
   use build_box, only: build_grid
   use print_matrix, only: write_matrix
-  use algorithm, only: calc_forces, calc_e_pot_harm, calc_e_kin
+  use algorithm
+
   implicit none
+  intrinsic :: sqrt
 
   !> floating point accuracy
   integer, parameter :: wp = selected_real_kind(15)
@@ -46,14 +48,25 @@ program main
   !> total energy
   real(wp) :: e_tot
 
+  !> lennard-jones potential energy
+  real(wp) :: e_pot_lj
+
+  !> temperature
+  real(wp) :: T
+
+  !> temporary variable
+  real(wp) :: temp
+
   !> temperatute to rescale velocities
-  integer, parameter :: t_rescale = 8
+  integer, parameter :: T_req = 8
 
   !> loop indices
   integer :: i, j, b
 
+  !> initialze variables
   a = 0.0_wp
   v = 0.0_wp
+  temp = 1._wp
 
   !> call grid building subroutine, 1 for sc and 4 for fcc
   call build_grid(xyz, natom, l, 4)
@@ -62,13 +75,13 @@ program main
   !call write_matrix(xyz, name="coordinate matrix")
 
   !> compute the forces
-  call calc_forces(natom, xyz, f, a, k, l)
+  call calc_forces(natom, xyz, f, l)
 
   !> print the resulting force matrix
   !call write_matrix(f, name="force matrix")
 
   !> compute potential energy
-  call calc_e_pot_harm(natom, xyz, l, a, k, e_pot_harm)
+  call calc_e_pot_lj(natom, xyz, l, e_pot_lj)
   !write (*, *) "Harmonic potential energy =", e_pot_harm
 
   !> open file for energies and start printing
@@ -86,34 +99,42 @@ program main
   !> main loop
   main_loop: do i = 1, itime
 
+    if (i > 1) then
+      !> temperature
+      T = e_kin/(3._wp*natom)
+
+      !> scaling factor for temperatur
+      temp = sqrt(T_req/T)
+    end if
+
     !> compute the new velocities (part 1) and positions
     do j = 1, natom
-      v(:, j) = v(:, j) + 0.5_wp*(f(:, j)/mass)*delta
+      v(:, j) = (v(:, j) + 0.5_wp*(f(:, j)/mass)*delta)*temp
       xyz(:, j) = xyz(:, j) + (v(:, j)*delta)
     end do
 
     !> calculate new forces
-    call calc_forces(natom, xyz, f, a, k, l)
+    call calc_forces(natom, xyz, f, l)
     !> print the resulting force matrix
     !call write_matrix(f, name="force matrix")
 
-    !> compute new velocities (part 2) and kinetic energy
+    !> compute new velocities (part 2)
     do j = 1, natom
       v(:, j) = v(:, j) + 0.5_wp*(f(:, j)/mass)*delta
     end do
 
     !> calculate energies
     call calc_e_kin(natom, mass, v, e_kin)
-    call calc_e_pot_harm(natom, xyz, l, a, k, e_pot_harm)
-    e_tot = e_kin + e_pot_harm
+    call calc_e_pot_lj(natom, xyz, l, e_pot_lj)
+    e_tot = e_kin + e_pot_lj
 
     !> print results to terminal
     !write (*, *) "Kinetic energy =           ", e_kin
-    !write (*, *) "Harmonic potential energy =", e_pot_harm
+    !write (*, *) "Harmonic potential energy =", e_pot_lj
     !write (*, *) "Total energy =             ", e_tot
 
     !> print results to energy file
-    write (15, "(I3,A1,F15.8,A1,F15.8,A1,F15.8,A1,F15.8)") i, ",", delta*i, ",", e_kin, ",", e_pot_harm, ",", e_tot
+    write (15, "(I3,A1,F15.8,A1,F15.8,A1,F15.8,A1,F15.8)") i, ",", delta*i, ",", e_kin, ",", e_pot_lj, ",", e_tot
 
     !> print results to trajectory file
     write (16, "(I4)") natom
